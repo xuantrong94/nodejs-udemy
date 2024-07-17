@@ -2,7 +2,6 @@ const { default: mongoose } = require('mongoose')
 const {
 	db: { host, port, user, pass, name },
 } = require('../configs/env.config')
-console.log('::: ~ host:', host)
 
 const connectString = `${host}://${user}:${pass}@mycluster.j59yckg.mongodb.net/${name}?retryWrites=true&w=majority&appName=MyCluster`
 

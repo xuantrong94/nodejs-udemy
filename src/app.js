@@ -4,6 +4,8 @@ const { default: helmet } = require('helmet')
 const morgan = require('morgan')
 require('dotenv').config()
 const app = express()
+const userRoutes = require('./routes/userRoutes')
+const tourRoutes = require('./routes/tourRoutes')
 
 // middleware
 app.use(helmet())
@@ -19,5 +21,9 @@ app.use(
 
 // init db
 require('./dbs/init.mongodb')
+
+// routes
+app.use('/api/v1/users', userRoutes)
+app.use('/api/v1/tours', tourRoutes)
 
 module.exports = app
