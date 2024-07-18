@@ -6,6 +6,7 @@ require('dotenv').config()
 const app = express()
 const userRoutes = require('./routes/userRoutes')
 const tourRoutes = require('./routes/tourRoutes')
+const errorHandler = require('./controllers/errorControllers')
 
 // middleware
 app.use(helmet())
@@ -25,5 +26,8 @@ require('./dbs/init.mongodb')
 // routes
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/tours', tourRoutes)
+
+// Error handling middleware
+app.use(errorHandler)
 
 module.exports = app
