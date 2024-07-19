@@ -12,7 +12,9 @@ router.param('id', (req, res, next, val) => {
 // check if body contains the name and price properties
 // if not, send back 400
 
-router.route('/').get(tourController.getAllTours).post(validateTour, tourController.createTour)
+router.route('/top-5-cheap').get(tourController.top5CheapAlias, tourController.getAllTours)
+
+router.route('/').get(tourController.getAllTours).post(tourController.createTour)
 
 router
 	.route('/:id')
