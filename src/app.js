@@ -6,7 +6,8 @@ require('dotenv').config()
 const app = express()
 const userRoutes = require('./routes/userRoutes')
 const tourRoutes = require('./routes/tourRoutes')
-const errorHandler = require('./controllers/errorControllers')
+const globalErrorHandler = require('./controllers/errorControllers')
+const AppError = require('./utils/appErorr')
 
 // middleware
 app.use(helmet())
@@ -27,7 +28,12 @@ require('./dbs/init.mongodb')
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/tours', tourRoutes)
 
+app.all('*', (req, res, next) => {
+	next(new AppError(`Can't find ${req.originalUrl} on this server`, 404))
+})
+
 // Error handling middleware
-app.use(errorHandler)
+// app.use(errorHandler)
+app.use(globalErrorHandler)
 
 module.exports = app

@@ -8,12 +8,14 @@ router.param('id', (req, res, next, val) => {
 	next()
 })
 
-// middleware checkBody
-// check if body contains the name and price properties
-// if not, send back 400
-
+// alias routes
 router.route('/top-5-cheap').get(tourController.top5CheapAlias, tourController.getAllTours)
 
+// stats-aggregation routes
+router.route('/tour-stats').get(tourController.getTourStats)
+router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan)
+
+// crud routes
 router.route('/').get(tourController.getAllTours).post(tourController.createTour)
 
 router
