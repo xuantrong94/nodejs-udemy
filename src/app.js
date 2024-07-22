@@ -7,7 +7,6 @@ const app = express()
 const userRoutes = require('./routes/userRoutes')
 const tourRoutes = require('./routes/tourRoutes')
 const globalErrorHandler = require('./controllers/errorControllers')
-const AppError = require('./utils/appErorr')
 
 // middleware
 app.use(helmet())
