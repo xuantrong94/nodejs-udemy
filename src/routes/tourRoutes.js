@@ -16,12 +16,12 @@ router.route('/tour-stats').get(tourController.getTourStats)
 router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan)
 
 // crud routes
-router.route('/').get(tourController.getAllTours).post(tourController.createTour)
+router.route('/').get(tourController.getAllTours).post(validateTour, tourController.createTour)
 
 router
 	.route('/:id')
 	.get(tourController.getTour)
-	.patch(tourController.updateTour)
+	.patch(validateTour, tourController.updateTour)
 	.delete(tourController.deleteTour)
 
 module.exports = router

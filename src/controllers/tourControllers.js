@@ -1,7 +1,6 @@
 const Tour = require('../models/tourModel')
 const APIFeatures = require('../utils/apiFeatures')
 const catchAsync = require('../utils/catchAsync')
-const AppError = require('../utils/appError')
 
 exports.top5CheapAlias = (req, res, next) => {
 	req.query.limit = 5
@@ -23,6 +22,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 		},
 	})
 })
+
 exports.createTour = catchAsync(async (req, res, next) => {
 	const newTour = await Tour.create(req.body)
 
@@ -157,3 +157,23 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
 		data: { plan },
 	})
 })
+
+exports.myGetAllTours = async (req, res, next) => {
+	try {
+		// declare query
+		let query = Tour.find()
+
+		// filtering
+		const queryObj = { ...req.query }
+		
+		const excludedFields = ['page', 'fields', 'limit', 'sort']
+		excludedFields.forEach((el) => delete queryObj[el])
+
+
+	} catch (error) {
+		return res.status(400).json({
+			status: 'fail',
+			message: error.message,
+		})
+	}
+}
