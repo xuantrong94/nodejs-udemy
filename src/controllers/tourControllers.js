@@ -165,11 +165,11 @@ exports.myGetAllTours = async (req, res, next) => {
 
 		// filtering
 		const queryObj = { ...req.query }
-		
+
 		const excludedFields = ['page', 'fields', 'limit', 'sort']
 		excludedFields.forEach((el) => delete queryObj[el])
 
-
+		// transfer
 	} catch (error) {
 		return res.status(400).json({
 			status: 'fail',

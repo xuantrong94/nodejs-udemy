@@ -9,6 +9,10 @@ const dev = {
 		pass: process.env.DEV_DB_PASS || '',
 		name: process.env.DEV_DB_NAME || 'nodejs',
 	},
+	jwt: {
+		key: process.env.DEV_JWT_SECRET_KEY,
+		expire: process.env.DEV_JWT_EXPIRE || '1d',
+	},
 }
 
 const pro = {
@@ -21,6 +25,10 @@ const pro = {
 		user: process.env.PRO_DB_USER || '',
 		pass: process.env.PRO_DB_PASS || '',
 		name: process.env.PRO_DB_NAME || 'nodejs',
+	},
+	jwt: {
+		key: process.env.PRO_JWT_SECRET_KEY,
+		expire: process.env.DEV_JWT_EXPIRE || '1d',
 	},
 }
 

@@ -22,6 +22,7 @@ var userSchema = new mongoose.Schema(
 			type: String,
 			required: [true, 'Please provide a password'],
 			minLength: 8,
+			select: false,
 		},
 		confirmPassword: {
 			type: String,
@@ -39,6 +40,14 @@ var userSchema = new mongoose.Schema(
 		collection: COLLECTION_NAME,
 	}
 )
+
+userSchema.methods.correctPassword = async function (
+	candidatePassword,
+	userPassword
+) {
+	return await bcrypt.compare(candidatePassword, userPassword)
+}
+
 
 userSchema.pre('save', async function (next) {
 	// Only run this function if password was actually modified
