@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const mongoose = require('mongoose') // Erase if already required
 const bcrypt = require('bcryptjs')
 // Declare the Schema of the Mongo model
@@ -18,6 +19,11 @@ var userSchema = new mongoose.Schema(
 			lowercase: true,
 		},
 		photo: String,
+		role: {
+			type: String,
+			enum: ['admin', 'user', 'guide', 'lead-guide'],
+			default: 'user',
+		},
 		password: {
 			type: String,
 			required: [true, 'Please provide a password'],
@@ -38,6 +44,8 @@ var userSchema = new mongoose.Schema(
 			type: Date,
 			select: false,
 		},
+		passwordResetToken: String,
+		passwordResetExpires: Date,
 	},
 	{
 		timestamps: true,
@@ -69,6 +77,13 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 
 	// If password hasn't been changed, return false
 	return false
+}
+
+userSchema.methods.createPasswordResetToken = function () {
+	const resetToken = crypto.randomBytes(32).toString('hex')
+	this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+	this.passwordResetExpires = Date.now() + 10 * 60 * 1000
+	return resetToken
 }
 
 //Export the model

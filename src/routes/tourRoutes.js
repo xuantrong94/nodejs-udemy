@@ -1,5 +1,6 @@
 const express = require('express')
 const tourController = require('../controllers/tourControllers')
+const authController = require('../controllers/authControllers')
 const { validateTour } = require('../middlewares/validationMiddleware')
 const router = express.Router()
 
@@ -22,6 +23,6 @@ router
 	.route('/:id')
 	.get(tourController.getTour)
 	.patch(validateTour, tourController.updateTour)
-	.delete(tourController.deleteTour)
+	.delete(authController.protect, authController.restrictTo('admin'), tourController.deleteTour)
 
 module.exports = router
