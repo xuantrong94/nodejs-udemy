@@ -11,7 +11,7 @@ const dev = {
 	},
 	jwt: {
 		key: process.env.DEV_JWT_SECRET_KEY,
-		expire: process.env.DEV_JWT_EXPIRE || '1d',
+		expire: process.env.DEV_JWT_EXPIRES || '1d',
 	},
 }
 
@@ -28,7 +28,7 @@ const pro = {
 	},
 	jwt: {
 		key: process.env.PRO_JWT_SECRET_KEY,
-		expire: process.env.DEV_JWT_EXPIRE || '1d',
+		expire: process.env.DEV_JWT_EXPIRES || '1d',
 	},
 }
 

@@ -22,6 +22,11 @@ app.use(
 	})
 ) // yêu cầu dạng url-encoded `username=john_doe&password=12345` <- searchParams ?
 
+app.use((req, res, next) => {
+	req.requestTime = new Date().toISOString()
+	next()
+})
+
 // init db
 require('./dbs/init.mongodb')
 

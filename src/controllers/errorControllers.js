@@ -1,4 +1,4 @@
-const AppError = require('../utils/AppError')
+const AppError = require('../utils/appError')
 
 // CastError refers to an invalid ID in the URL
 const handleCastErrorDB = (err) => {
@@ -19,11 +19,20 @@ const handleDuplicateFieldsDB = (err) => {
 	return new AppError(message, 400)
 }
 
+const handleJWTError = () => {
+	const message = 'Invalid JWT token. Please log in again.'
+	return new AppError(message, 401)
+}
+
+const handleJWTExpiredError = () => {
+	return new AppError('Your token has expired! Please log in again.', 401)
+}
+
 const sendErrorDev = (err, res) => {
 	res.status(err.statusCode).json({
 		status: err.status,
 		message: err.message,
-		error: err.error,
+		name: err.name,
 		stack: err.stack,
 	})
 }
@@ -35,24 +44,23 @@ const sendErrorProd = (err, res) => {
 			message: err.message,
 		})
 	} else {
+		// Send generic error message
 		res.status(500).json({
 			status: 'error',
 			message: 'Something went wrong, please try again later.',
 		})
 	}
-	// Send generic error message
 }
 
 module.exports = (err, req, res, next) => {
-	console.error('ERROR 💥', err.stack)
-
 	err.statusCode = err.statusCode || 500
+	err.name = err.name
 	err.status = err.status || 'error'
 
 	if (process.env.NODE_ENV !== 'production') {
 		sendErrorDev(err, res)
 	} else {
-		let error = { ...err }
+		let error = Object.create(err)
 		if (error.name === 'CastError') {
 			error = handleCastErrorDB(error)
 		}
@@ -61,6 +69,12 @@ module.exports = (err, req, res, next) => {
 		}
 		if (error.code === 11000) {
 			error = handleDuplicateFieldsDB(error)
+		}
+		if (error.name === 'JsonWebTokenError') {
+			error = handleJWTError()
+		}
+		if (error.name === 'TokenExpiredError') {
+			error = handleJWTExpiredError()
 		}
 		sendErrorProd(error, res)
 	}
