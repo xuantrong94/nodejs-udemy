@@ -7,9 +7,7 @@ const app = express()
 const userRoutes = require('./routes/userRoutes')
 const tourRoutes = require('./routes/tourRoutes')
 const globalErrorHandler = require('./controllers/errorControllers')
-const {
-	jwt: { key },
-} = require('./configs/env.config')
+const AppError = require('./utils/appError')
 // middleware
 app.use(helmet())
 app.use(morgan('dev'))
