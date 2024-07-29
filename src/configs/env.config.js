@@ -19,6 +19,9 @@ const dev = {
 		username: process.env.DEV_EMAIL_USERNAME,
 		pass: process.env.DEV_EMAIL_PASS,
 	},
+	cookie: {
+		expires: process.env.DEV_COOKIE_EXPIRES || 90,
+	},
 }
 
 const pro = {
@@ -41,6 +44,9 @@ const pro = {
 		port: process.env.PRO_EMAIL_PORT,
 		username: process.env.PRO_EMAIL_USERNAME,
 		pass: process.env.PRO_EMAIL_PASS,
+	},
+	cookie: {
+		expires: process.env.PRO_COOKIE_EXPIRES || 90,
 	},
 }
 
