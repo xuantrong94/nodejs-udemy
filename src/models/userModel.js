@@ -5,7 +5,8 @@ const bcrypt = require('bcryptjs')
 // name, email, password, passwordConfirm
 const DOCUMENT_NAME = 'User'
 const COLLECTION_NAME = 'Users'
-var userSchema = new mongoose.Schema(
+
+const userSchema = new mongoose.Schema(
 	{
 		name: {
 			type: String,
@@ -89,7 +90,5 @@ userSchema.methods.createPasswordResetToken = function () {
 	return resetToken
 }
 
-const User = mongoose.model(DOCUMENT_NAME, userSchema)
-
 //Export the model
-module.exports = User
+module.exports = mongoose.model(DOCUMENT_NAME, userSchema)

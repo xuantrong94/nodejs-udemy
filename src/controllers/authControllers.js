@@ -112,7 +112,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 	const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/reset-password/${resetToken}`
 
 	const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`
-
+	console.log(user.email)
 	try {
 		await sendEmail({
 			email: user.email,
@@ -129,7 +129,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 		user.passwordResetExpires = undefined
 		await user.save({ validateBeforeSave: false })
 
-		return next(new AppError('There was an error sending the email. Try again later!'), 500)
+		return next(new AppError(err.message), 500)
 	}
 })
 
@@ -157,20 +157,20 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 	// 3. Update changedPasswordAt property for the user
 	user.passwordChangeAt = Date.now()
 
-  await user.save()
+	await user.save()
 
-  res.status(200).json({
-    status:'success',
-    message: 'Password reset successful! You can now log in.',
-  })
+	res.status(200).json({
+		status: 'success',
+		message: 'Password reset successful! You can now log in.',
+	})
 	// 4. Log the user in, send jwt
 	const token = signToken(user._id)
 
-  res.status(200).json({
-    status:'success',
-    token,
-    data: {
-      user,
-    },
-  })
+	res.status(200).json({
+		status: 'success',
+		token,
+		data: {
+			user,
+		},
+	})
 })

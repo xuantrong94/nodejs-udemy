@@ -7,6 +7,7 @@ const sendEmail = async (options) => {
 	const transporter = nodemailer.createTransport({
 		host: host,
 		port: port,
+		secure: false,
 		auth: {
 			user: username,
 			pass: pass,
@@ -15,8 +16,9 @@ const sendEmail = async (options) => {
 
 	// 2) Define the email options
 	const mailOptions = {
-		from: 'Jonas Schmedtmann <hello@jonas.io>',
-		to: options.email,
+		from: 'Nodemailer <hi@demomailtrap.com>',
+		// to: options.email,
+		to: 'xuantrong.12cmt@gmail.com',
 		subject: options.subject,
 		text: options.message,
 		// html:
