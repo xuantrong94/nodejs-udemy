@@ -65,4 +65,18 @@ exports.createUser = (req, res) => {
 	res.send('Create user')
 }
 
-exports.UpdateMember = catchAsync(async (req, res, next) => {})
+exports.UpdateMember = catchAsync(async (req, res, next) => {
+	const user = await User.findOneAndUpdate({ _id: req.params.id }, req.body, {
+		new: true,
+		runValidators: true,
+	})
+	if (!user) {
+		return next(new AppError('No user found', 404))
+	}
+	return res.status(200).json({
+		status: 'success',
+		data: {
+			user,
+		},
+	})
+})

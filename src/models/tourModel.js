@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-
+const slugify = require('slugify')
+const User = require('../models/userModel')
 const DOCUMENT_NAME = 'Tour'
 const COLLECTION_NAME = 'Tours'
 
@@ -124,7 +125,7 @@ const tourSchema = new mongoose.Schema(
 				},
 				message: 'Discount price ({VALUE}) should be below the regular price',
 			},
-			min: [0, 'Price discount must be a non-negative number'],
+			// min: [0, 'Price discount must be a non-negative number'],
 		},
 		summary: {
 			type: String,
@@ -145,6 +146,35 @@ const tourSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		startLocation: {
+			type: {
+				type: String,
+				default: 'Point',
+				enum: ['Point'],
+			},
+			coordinates: [Number],
+			address: String,
+			description: String,
+		},
+		locations: [
+			{
+				type: {
+					type: String,
+					default: 'Point',
+					enum: ['Point'],
+				},
+				coordinates: [Number],
+				address: String,
+				description: String,
+				day: Number,
+			},
+		],
+		guides: [
+			{
+				type: mongoose.Schema.ObjectId,
+				ref: 'User',
+			},
+		],
 	},
 	{
 		toJSON: { virtuals: true },
@@ -159,10 +189,16 @@ tourSchema.virtual('durationWeek').get(function () {
 })
 
 // DOCUMENT MIDDLEWARE: runs before .save() and .create()
-tourSchema.pre('save', function () {
+tourSchema.pre('save', function (next) {
 	this.slug = slugify(this.name, { lower: true })
 	next()
 })
+
+//* Embedding guides:
+// tourSchema.pre('save', async function (next) {
+// 	const guidesPromises = this.guides.map(async (id) => await User.findById(id))
+// 	this.guides = await Promise.all(guidesPromises)
+// })
 
 tourSchema.pre('save', function (next) {
 	if (this.startDates) {
@@ -175,7 +211,15 @@ tourSchema.pre('save', function (next) {
 })
 
 // QUERY MIDDLEWARE
-tourSchema.pre('^find', function (next) {
+tourSchema.pre(/^find/, function (next) {
+	this.populate({
+		path: 'guides',
+		select: '-__v -createdAt -updatedAt',
+	})
+	next()
+})
+
+tourSchema.pre(/^find/, function (next) {
 	this.find({ secretTour: { $ne: true } }) //ne = not equal
 	next()
 })

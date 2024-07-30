@@ -28,8 +28,8 @@ exports.validateTour = [
 	body('price').isFloat({ min: 0 }).withMessage('Price must be a non-negative number'),
 
 	body('priceDiscount')
-		.isFloat({ min: 0 })
-		.withMessage('Price discount must be a non-negative number')
+		// .isFloat({ min: 0 })
+		// .withMessage('Price discount must be a non-negative number')
 		.custom((value, { req }) => {
 			if (value >= req.body.price) {
 				throw new Error('Discount price should be below the regular price')

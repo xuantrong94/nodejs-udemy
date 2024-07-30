@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel')
 const APIFeatures = require('../utils/apiFeatures')
+const AppError = require('../utils/appError')
 const catchAsync = require('../utils/catchAsync')
 
 exports.top5CheapAlias = (req, res, next) => {
