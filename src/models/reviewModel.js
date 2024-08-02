@@ -46,3 +46,5 @@ reviewSchema.pre(/^find/, function (next) {
 
 //Export the model
 module.exports = mongoose.model(DOCUMENT_NAME, reviewSchema)
+
+// POST /tour/
