@@ -11,8 +11,14 @@ const tourSchema = new mongoose.Schema(
 			required: [true, 'A tour must have a name'],
 			unique: true,
 			trim: true,
-			maxLength: [40, 'A tour name must have less or equal than 40 characters'],
-			minLength: [10, 'A tour name must have more or equal than 10 characters'],
+			maxLength: [
+				40,
+				'A tour name must have less or equal than 40 characters',
+			],
+			minLength: [
+				10,
+				'A tour name must have more or equal than 10 characters',
+			],
 		},
 		slug: String,
 		duration: {
@@ -36,6 +42,7 @@ const tourSchema = new mongoose.Schema(
 			default: 4.5,
 			min: [1, 'Rating must be above 1.0'],
 			max: [5, 'Rating must be below 5.0'],
+			set: (val) => Math.round(val) / 10,
 		},
 		ratingsQuantity: {
 			type: Number,
@@ -52,7 +59,8 @@ const tourSchema = new mongoose.Schema(
 				validator: function (val) {
 					return val < this.price
 				},
-				message: 'Discount price ({VALUE}) should be below the regular price',
+				message:
+					'Discount price ({VALUE}) should be below the regular price',
 			},
 		},
 		summary: {
@@ -79,8 +87,14 @@ const tourSchema = new mongoose.Schema(
 			required: [true, 'A tour must have a name'],
 			unique: true,
 			trim: true,
-			maxlength: [40, 'A tour name must have less or equal than 40 characters'],
-			minlength: [10, 'A tour name must have more or equal than 10 characters'],
+			maxlength: [
+				40,
+				'A tour name must have less or equal than 40 characters',
+			],
+			minlength: [
+				10,
+				'A tour name must have more or equal than 10 characters',
+			],
 		},
 		slug: String,
 		duration: {
@@ -123,7 +137,8 @@ const tourSchema = new mongoose.Schema(
 				validator: function (val) {
 					return val < this.price
 				},
-				message: 'Discount price ({VALUE}) should be below the regular price',
+				message:
+					'Discount price ({VALUE}) should be below the regular price',
 			},
 			// min: [0, 'Price discount must be a non-negative number'],
 		},
@@ -216,7 +231,9 @@ tourSchema.pre('save', function (next) {
 
 tourSchema.pre('save', function (next) {
 	if (this.startDates) {
-		const invalidDates = this.startDates.filter((date) => isNaN(Date.parse(date)))
+		const invalidDates = this.startDates.filter((date) =>
+			isNaN(Date.parse(date))
+		)
 		if (invalidDates.length > 0) {
 			next(new Error('Invalid date format in start dates'))
 		}
