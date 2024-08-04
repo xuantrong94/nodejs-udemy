@@ -1,28 +1,38 @@
-const compression = require('compression')
 const express = require('express')
-const { default: helmet } = require('helmet')
+const path = require('path')
+
 const morgan = require('morgan')
+const { default: helmet } = require('helmet')
+const compression = require('compression')
 const rateLimit = require('express-rate-limit')
 const mongoSanitizer = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
 
 require('dotenv').config()
-const app = express()
 const userRoutes = require('./routes/userRoutes')
 const tourRoutes = require('./routes/tourRoutes')
 const reviewRoutes = require('./routes/reviewRoutes')
 const globalErrorHandler = require('./controllers/errorControllers')
 const AppError = require('./utils/appError')
 
+const app = express()
+
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views'))
+
 //* middleware
-app.use(helmet())
 app.use(morgan('dev'))
+
+//* Global middleware
+// Set security HTTP headers
+app.use(helmet())
 app.use(compression())
 const limiter = rateLimit({
 	max: 100,
 	windowMs: 60 * 60 * 1000,
-	message: 'Too many requests from this IP, please try again in an hour',
+	message:
+		'Too many requests from this IP, please try again in an hour',
 })
 app.use('/api', limiter)
 
@@ -64,16 +74,22 @@ app.use((req, res, next) => {
 	next()
 })
 
-// init db
+//* init db
 require('./dbs/init.mongodb')
 
-// routes
+//* routes
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/tours', tourRoutes)
 app.use('/api/v1/reviews', reviewRoutes)
 
+app.get('/', (req, res) => {
+	res.render('base', { title: 'Home Page' })
+})
+
 app.all('*', (req, res, next) => {
-	next(new AppError(`Can't find ${req.originalUrl} on this server`, 404))
+	next(
+		new AppError(`Can't find ${req.originalUrl} on this server`, 404)
+	)
 })
 
 // Error handling middleware

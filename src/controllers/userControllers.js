@@ -28,9 +28,14 @@ exports.updateUser = catchAsync(async (req, res) => {
 			)
 		)
 	}
-
+	const adminUpdate = req.user.role === 'admin' ? 'role' : null
 	// 2. Filtered out unwanted fields names that are not allowed to be updated
-	const filteredBody = filterObj(req.body, 'name', 'email')
+	const filteredBody = filterObj(
+		req.body,
+		'name',
+		'email',
+		adminUpdate
+	)
 
 	// 3. Update user document
 	const updatedUser = await User.findByIdAndUpdate(
@@ -54,5 +59,18 @@ exports.getAllUsers = factory.getAll(User)
 exports.createUser = factory.createOne(User)
 exports.getMember = factory.getOne(User)
 exports.getUser = factory.getOne(User)
-exports.updateMember = factory.updateOne(User)
 exports.deleteUser = factory.deleteOne(User)
+exports.updateMember = catchAsync(async (req, res) => {
+	const updatedUser = await User.findOneAndUpdate(
+		{ _id: req.params.userId },
+		req.body,
+		{
+			new: true,
+			runValidators: true,
+		}
+	)
+	res.status(200).json({
+		status: 'success',
+		data: updatedUser,
+	})
+})

@@ -32,4 +32,11 @@ router
 	.patch(authControllers.protect, userControllers.updateUser)
 	.delete(authControllers.protect, userControllers.deleteUser)
 
+router
+	.route('/admin/:userId')
+	.patch(
+		authControllers.protect,
+		authControllers.restrictTo('admin'),
+		userControllers.updateMember
+	)
 module.exports = router
