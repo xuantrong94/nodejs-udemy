@@ -8,16 +8,18 @@ const rateLimit = require('express-rate-limit')
 const mongoSanitizer = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
+const cookieParser = require('cookie-parser')
 
 require('dotenv').config()
 const userRoutes = require('./routes/userRoutes')
 const tourRoutes = require('./routes/tourRoutes')
 const reviewRoutes = require('./routes/reviewRoutes')
+const viewRouter = require('./routes/viewRoutes')
+
 const globalErrorHandler = require('./controllers/errorControllers')
 const AppError = require('./utils/appError')
 
 const app = express()
-
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, 'views'))
 
@@ -44,6 +46,7 @@ app.use(
 		extended: true,
 	})
 ) // yêu cầu dạng url-encoded `username=john_doe&password=12345` <- searchParams ?
+app.use(cookieParser())
 
 //* Data sanitization against NoSQL query injection
 app.use(mongoSanitizer())
@@ -78,12 +81,16 @@ app.use((req, res, next) => {
 require('./dbs/init.mongodb')
 
 //* routes
+app.use('/', viewRouter)
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/tours', tourRoutes)
 app.use('/api/v1/reviews', reviewRoutes)
 
 app.get('/', (req, res) => {
-	res.render('base', { title: 'Home Page' })
+	res.render('base', {
+		tour: 'The Forest Hiker',
+		user: 'Jonas',
+	})
 })
 
 app.all('*', (req, res, next) => {
