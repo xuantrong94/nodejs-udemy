@@ -1,4 +1,5 @@
 const express = require('express')
+
 const userControllers = require('../controllers/userControllers')
 const authControllers = require('../controllers/authControllers')
 
@@ -21,22 +22,22 @@ router.patch(
 	authControllers.updatePassword
 )
 
-router
-	.route('/')
-	.get(authControllers.protect, userControllers.getAllUsers)
-	.post(userControllers.createUser)
+router.use(authControllers.protect)
+
+router.route('/').get(userControllers.getAllUsers)
 
 router
 	.route('/:id')
 	.get(userControllers.getMember)
-	.patch(authControllers.protect, userControllers.updateUser)
-	.delete(authControllers.protect, userControllers.deleteUser)
+	.patch(userControllers.updateUser)
+	.delete(userControllers.deleteUser)
 
 router
 	.route('/admin/:userId')
 	.patch(
-		authControllers.protect,
 		authControllers.restrictTo('admin'),
+		userControllers.uploadUserPhoto,
+		userControllers.resizeUserPhoto,
 		userControllers.updateMember
 	)
 module.exports = router

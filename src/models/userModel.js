@@ -31,16 +31,16 @@ const userSchema = new mongoose.Schema(
 			minLength: 8,
 			select: false,
 		},
-		confirmPassword: {
-			type: String,
-			required: [true, 'Please confirm your password'],
-			validate: {
-				validator: function (val) {
-					return val === this.password
-				},
-				message: 'Passwords are not the same',
-			},
-		},
+		// confirmPassword: {
+		// 	type: String,
+		// 	required: [true, 'Please confirm your password'],
+		// 	validate: {
+		// 		validator: function (val) {
+		// 			return val === this.password
+		// 		},
+		// 		message: 'Passwords are not the same',
+		// 	},
+		// },
 		passwordChangedAt: {
 			type: Date,
 			select: false,
@@ -74,17 +74,17 @@ userSchema.methods.correctPassword = async function (
 	return await bcrypt.compare(candidatePassword, userPassword)
 }
 
-userSchema.pre('save', async function (next) {
-	// Only run this function if password was actually modified
-	if (!this.isModified('password')) return next()
+// userSchema.pre('save', async function (next) {
+// 	// Only run this function if password was actually modified
+// 	if (!this.isModified('password')) return next()
 
-	// hash the password with cost of 12
-	this.password = await bcrypt.hash(this.password, 10)
+// 	// hash the password with cost of 12
+// 	this.password = await bcrypt.hash(this.password, 10)
 
-	// delete passwordConfirm field
-	this.confirmPassword = undefined
-	next()
-})
+// 	// delete passwordConfirm field
+// 	this.confirmPassword = undefined
+// 	next()
+// })
 
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 	if (this.passwordChangedAt) {

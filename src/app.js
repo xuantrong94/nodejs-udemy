@@ -11,10 +11,9 @@ const hpp = require('hpp')
 const cookieParser = require('cookie-parser')
 
 require('dotenv').config()
-const userRoutes = require('./routes/userRoutes')
 const tourRoutes = require('./routes/tourRoutes')
 const reviewRoutes = require('./routes/reviewRoutes')
-const viewRouter = require('./routes/viewRoutes')
+const userRoutes = require('./routes/userRoutes')
 
 const globalErrorHandler = require('./controllers/errorControllers')
 const AppError = require('./utils/appError')
@@ -81,7 +80,6 @@ app.use((req, res, next) => {
 require('./dbs/init.mongodb')
 
 //* routes
-app.use('/', viewRouter)
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/tours', tourRoutes)
 app.use('/api/v1/reviews', reviewRoutes)
